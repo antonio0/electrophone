@@ -15,7 +15,7 @@ Router.configure({
 
 Router.route('/', {name: 'newSession'});
 
-Router.route('/session/:_sessionid', {
+Router.route('/:_sessionid', {
 	name: 'tracksPage',
 	data: function() { return {sessionid: this.params._sessionid}; }
 });
