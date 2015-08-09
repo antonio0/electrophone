@@ -1,0 +1,62 @@
+<head>
+  <title>electrophone</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dragdealer/0.9.8/dragdealer.min.js"></script>
+  <script src="http://wavesurfer-js.org/dist/wavesurfer.min.js"></script>
+</head>
+
+<body>
+  <div id="waveform">
+  </div>
+  <header>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo center">Electrophone</a>
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <main>
+      {{> dragList}}
+
+    <div class="Aligner">
+      <div class="Aligner-item">
+        <a class="waves-effect waves-light btn-large"><i class="material-icons right">add</i>Import track</a>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <nav class="grey">
+      <div class="nav-wrapper">
+      <!--  <div class="left">
+          <a class="btn-floating btn-large waves-effect waves-light red material-icons"><i class="material-icons">play_arrow</i></a>
+        </div>
+      -->
+        <div class="center">
+          <a class="btn-floating btn-large waves-effect waves-light red material-icons" id="playbutton"><i class="material-icons">play_arrow</i></a>
+        </div>
+      </div>
+    </nav>
+
+  </footer>
+</body>
+
+<template name="dragList">
+      <ul id="trackList" class="collection">
+      	{{#each tracks}}
+          {{> trackItem}}
+        {{/each}}
+      </ul>
+</template>
+
+<template name="trackItem">
+  <li class="collection-item avatar">
+    <i class="material-icons circle" style="background-color:inherit;color:inherit;">reorder</i>
+    <div class="dragdealer" id="shit-{{number}}">
+      <div class="handle red-bar">{{name}}</div>
+    </div>
+    <i class="secondary-content material-icons delete-button">delete</i>
+    <div class="number">{{number}}</div>
+  </li>
+</template>
