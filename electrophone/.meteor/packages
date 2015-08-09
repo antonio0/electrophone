@@ -15,3 +15,4 @@ iron:router
 sacha:spin
 cfs:standard-packages
 cfs:gridfs
+matb33:collection-hooks

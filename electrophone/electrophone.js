@@ -1,23 +1,4 @@
-//Tracks = new Meteor.Collection('tracks1');
-
 if (Meteor.isClient) {
-  /*
-  // counter starts at 0
-  Session.setDefault('counter', 0);
-
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
-    }
-  });
-
-  Template.hello.events({
-    'click a': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
-    }
-  });
-  */
 
   Meteor.startup(function () {
     var wavesurfer = Object.create(WaveSurfer);
@@ -34,7 +15,7 @@ if (Meteor.isClient) {
         wavesurfer.play();
     });
 
-    wavesurfer.load('/Dropbox/Julian_Casablancas_-_Human_Sadness.mp3');
+    //wavesurfer.load('');
 
   });
 
@@ -48,59 +29,86 @@ if (Meteor.isClient) {
     var sortable = new Sortable(el, {
       //handle: ".my-handle",
       // Changed sorting within list
+      dataIdAttr: 'data-id',
       onUpdate: function (/**Event*/evt) {
           var itemEl = evt.item;  // dragged HTMLElement
           // + indexes from onEnd
           console.log(evt);
       },
+      store: {
+      /**
+       * Get the order of elements. Called once during initialization.
+       * @param   {Sortable}  sortable
+       * @returns {Array}
+       */
+      get: function (sortable) {
+          var order = localStorage.getItem(sortable.options.group);
+          return order ? order.split('|') : [];
+      },
+
+      /**
+       * Save the order of elements. Called onEnd (when the item is dropped).
+       * @param {Sortable}  sortable
+       */
+      set: function (sortable) {
+          var order = sortable.toArray();
+          localStorage.setItem(sortable.options.group, order.join('|'));
+      }
+  }
+
     });
   });
 
-  Template.body.events({
+  Template.trackItem.events({
     'click .delete-button': function (e) {
       e.preventDefault();
-      console.log("asd");
+      console.log("delete event");
       var id = e.target.nextSibling.nextSibling.innerHTML;
       console.log(id);
       Tracks.remove(id);
     },
-    'click #playbutton': function(e) {
-      console.log(e);
-    },
   });
 
+  var dragdealers = {};
 
   Template.trackItem.onRendered(function(){
-    var id = this.$('.dragdealer').attr('id');
+    var MAX_TIME = 3*60; // 2 minutes
+    var dragdealer = this.$('.dragdealer');
+    var id = dragdealer.attr('id');
     var track_id = this.$('.number').text();
     var handle = this.$('.dragdealer .handle');
-    this.$('.dragdealer .handle').width('100px');
-    new Dragdealer(id, {
-      x: 0.4,
+    console.log(this.$('.dragdealer').width());
+    var trackObj = Tracks.findOne(track_id);
+    var widthPx = (trackObj.track_length * dragdealer.width()) / MAX_TIME;
+    console.log(widthPx);
+    handle.width(widthPx+'px');
+    //leftPx = (trackObj.start_time * this.$('.dragdealer').width()) / MAX_TIME;
+    //handle.css('transform', 'matrix(1, 0, 0, 1, '+leftPx+', 0)');
+    console.log('start_time='+trackObj.start_time);
+    console.log('x='+trackObj.start_time*2 / MAX_TIME);
+    dragdealers[track_id] = new Dragdealer(id, {
+      x: trackObj.xpos,
       slide: false,
       //loose: true,
-      callback: function(x, y) {
+      dragStopCallback: function(x, y) {
         console.log(id);
-        var posx = handle.css('transform').split(',')[4].trim();
-        console.log(posx);
-        console.log(track_id);
-        Tracks.update({_id: track_id}, {$set:{'start_time':parseInt(posx)}});
+        var leftx = parseInt(handle.css('transform').split(',')[4].trim());
+        console.log("leftx="+leftx);
+        console.log("x="+x);
+        var starttime = leftx * MAX_TIME / dragdealer.width();
+        console.log(starttime);
+        Tracks.update({_id: track_id}, {$set:{'start_time':starttime, 'xpos': x}});
       }
     });
-
   });
-
+  Template.trackItem.onRendered(function () {
+    var track_id = Template.instance().$('.number').text();
+    Tracker.autorun(function () {
+      dragdealers[track_id].setValue(Tracks.findOne(track_id).xpos,0);
+    });
+  });
 }
 
 if (Meteor.isServer) {
-  /*
-  Meteor.startup(function () {
-    if (Tracks.find({}).count() === 0) {
-      _(5).times(function(n) {
-        Tracks.insert({name:'Track '+(n+1),number:n+1});
-      });
-    }
-  });
-*/
 
 }
