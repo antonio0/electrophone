@@ -1,7 +1,7 @@
 <template name="layout">
 	<body>
-	  <div id="waveform">
-	  </div>
+	  <!-- <div id="waveform">
+	  </div> -->
 	  <header>
 	    <nav>
 	      <div class="nav-wrapper">
@@ -48,7 +48,13 @@
 	  <li class="collection-item avatar">
 	    <i class="material-icons circle" style="background-color:inherit;color:inherit;">reorder</i>
 	    <div class="dragdealer" id="track-{{track_id}}">
-	      <div class="handle red-bar">{{sound_name}}</div>
+	      <div class="handle red-bar">
+	      	<!-- {{sound_name}} -->
+<!-- 	      	<div>
+	      		<div class="waveform"></div>
+	      	</div> -->
+	      	<!-- <div class="waveform"></div> -->
+	      </div>
 	    </div>
 	    <i class="secondary-content material-icons delete-button">delete</i>
 	    <div class="number">{{_id}}</div>

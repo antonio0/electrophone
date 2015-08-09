@@ -23,10 +23,18 @@ waiting_sounds = [];
 Template.playButton.events({
 	'click a': function () {
 		session_tracks = getTracksBySession(Session.get('sessionID'));
+		// console.log(session_tracks)
+		// session_tracks.forEach(function(track) {
+		// 	track = wavesurfers[session_tracks[0].track_id]
+		// 	current_wavesurfer = wavesurfers[track.track_id]
+		// 	setTimeout(function() { current_wavesurfer.play(); console.log('DONE WAITING'); }, track.start_time*1000)
+		// });
+		
 		session_sounds = getSoundsByTracks(session_tracks);
+		console.log(session_sounds)
 		playAllSoundsWithOffsets(session_sounds);
-		console.log("asdf");
-		console.log(session_tracks);
+		// console.log("asdf");
+		// console.log(session_tracks);
 	}
 });
 
