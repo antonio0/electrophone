@@ -1,4 +1,4 @@
-Tracks = new Meteor.Collection('tracks');
+//Tracks = new Meteor.Collection('tracks1');
 
 if (Meteor.isClient) {
   /*
@@ -40,7 +40,7 @@ if (Meteor.isClient) {
 
   Template.dragList.helpers({
     tracks: function(){
-      return Tracks.find({});
+      return Tracks.find({session_id: Session.get('sessionID')});
   }});
 
   Template.dragList.onRendered(function(){
@@ -59,8 +59,10 @@ if (Meteor.isClient) {
   Template.body.events({
     'click .delete-button': function (e) {
       e.preventDefault();
-      var number = e.target.nextSibling.nextSibling.innerHTML;
-      console.log(number);
+      console.log("asd");
+      var id = e.target.nextSibling.nextSibling.innerHTML;
+      console.log(id);
+      Tracks.remove(id);
     },
     'click #playbutton': function(e) {
       console.log(e);
@@ -70,16 +72,19 @@ if (Meteor.isClient) {
 
   Template.trackItem.onRendered(function(){
     var id = this.$('.dragdealer').attr('id');
-    var number = this.$('.number').text();
+    var track_id = this.$('.number').text();
     var handle = this.$('.dragdealer .handle');
-    this.$('.dragdealer .handle').width(''+number*100+'px');
+    this.$('.dragdealer .handle').width('100px');
     new Dragdealer(id, {
+      x: 0.4,
       slide: false,
       //loose: true,
       callback: function(x, y) {
         console.log(id);
-        var posx = handle.css('transform').split(',')[4];
+        var posx = handle.css('transform').split(',')[4].trim();
         console.log(posx);
+        console.log(track_id);
+        Tracks.update({_id: track_id}, {$set:{'start_time':parseInt(posx)}});
       }
     });
 
@@ -88,12 +93,14 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
+  /*
   Meteor.startup(function () {
     if (Tracks.find({}).count() === 0) {
       _(5).times(function(n) {
-        Tracks.insert({name:'Track '+n+1,number:n+1});
+        Tracks.insert({name:'Track '+(n+1),number:n+1});
       });
     }
-});
+  });
+*/
 
 }
